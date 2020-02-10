@@ -6,12 +6,12 @@ body {
 }
 
 header {
-    font-size: 40px;
+    font-size: 38px;
     font-weight: 700;
 }
 
 #msg {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 800;
 }
 
@@ -19,11 +19,13 @@ table {
     margin: auto;
     border-style: solid;
     border-spacing: 3px;
+    background-color: aqua;
+    position: relative;
 }
 
 table td {
-    padding: 29px;
-    background-color: aqua;
+    padding: 30px;
+    position: relative;
 }
 
 #replay {
@@ -35,6 +37,22 @@ table td {
 }
 
 .used {
-    padding: 29px;
+    padding: 30px;
     background-color: green;
+    border-radius: 50%;
+    /* outline: green dotted 1px; */
+}
+
+.team1 {
+    position: absolute;
+    padding: 18px;
+    background-color: rgb(119, 139, 0);
+    border-radius: 50%;
+}
+
+.team2 {
+    position: absolute;
+    padding: 18px;
+    background-color: limegreen;
+    border-radius: 50%;
 }

@@ -18,13 +18,15 @@ header {
 table {
     margin: auto;
     border-style: solid;
-    border-spacing: 3px;
+    /* border-spacing: 3px; */
     background-color: aqua;
     position: relative;
 }
 
 table td {
-    padding: 30px;
+    width: 30px;
+    height: 30px;
+    /* padding: 30px; */
     position: relative;
 }
 
@@ -44,15 +46,41 @@ table td {
 }
 
 .team1 {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgb(104, 138, 0);
+    margin: 5px auto;
+    position: absolute;
+}
+
+.team2{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: limegreen;
+    margin: 5px auto;
+    position: absolute;
+}
+
+.empty {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: purple;
+    margin: 5px auto;
+    position: absolute;
+}
+
+/* .team1 {
     position: absolute;
     padding: 18px;
-    background-color: rgb(119, 139, 0);
     border-radius: 50%;
 }
 
 .team2 {
+
     position: absolute;
     padding: 18px;
-    background-color: limegreen;
     border-radius: 50%;
-}
+} */

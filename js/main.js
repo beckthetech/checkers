@@ -47,18 +47,23 @@ document.getElementById('replay').addEventListener('click', init);
 function handleMove(evt) {
     const sqrIdx = playSqrs.indexOf(evt.target);
     if (sqrIdx === -1) return;
-    if (evt.target.className === `team${playerIds[gameState.turn]}-piece` || evt.target.className === `team${playerIds[gameState.turn]}-king` || (gameState.selectedPiece !== null && evt.target.className === 'empty')) {
+    let eventClasses = Array.from(evt.target.classList);
+    if (eventClasses.includes(`team${playerIds[gameState.turn]}-piece`) || eventClasses.includes(`team${playerIds[gameState.turn]}-king`) || (gameState.selectedPiece !== null && eventClasses.includes('empty'))) {
         if (gameState.selectedPiece === null) {
+            debugger;
             gameState.selectedPiece = evt.target;
+            gameState.selectedPiece.classList.add('selected');
         } else if (gameState.desiredSqr === undefined) {
             gameState.desiredSqr = evt.target;
             if (gameState.desiredSqr.className === 'empty') {
                 gameState.board[sqrIdx] = new Piece(gameState.turn);
+                gameState.selectedPiece.classList.remove('selected');
                 gameState.board[playSqrs.indexOf(gameState.selectedPiece)] = null;
                 gameState.selectedPiece = null;
                 gameState.desiredSqr = undefined;
                 gameState.turn *= -1;
             } else if (gameState.desiredSqr === gameState.selectedPiece) {
+                gameState.selectedPiece.classList.remove('selected');
                 gameState.selectedPiece = null;
                 gameState.desiredSqr = undefined;
                 return;
@@ -83,16 +88,9 @@ function handleMove(evt) {
     // if landed on end square call kingMe function
     // console.log(evt.target);
     // console.log(gameState.selectedPiece);
-    play();
-}
-
-function play() {
-    // check for win
-    // update positions
-    // check for "jumps"
-    // remove jumped pieces
     render();
 }
+
 function kingMe() {
     // remove piece object
     // create instance of king object
@@ -113,21 +111,25 @@ function renderBoard() {
     gameState.board.forEach((piece, idx) => {
         let sqr = playSqrs[idx];
         if (piece === null) {
-            sqr.className = 'empty';
+            updateClasses(sqr, 'team1-piece', 'team2-piece', 'team1-king', 'team2-king', 'empty');
         } else if (piece.player === 1 && !piece.isKing) {
-            // render to player one class
-            sqr.className = 'team1-piece';
+            updateClasses(sqr, 'team2-piece', 'team1-king', 'team2-king', 'empty', 'team1-piece');
         } else if (piece.player === -1 && !piece.isKing) {
-            // render to player two class
-            sqr.className = 'team2-piece';
+            updateClasses(sqr, 'team1-king', 'team2-king', 'empty', 'team1-piece', 'team2-piece');
         } else if (piece.player === 1 && piece.isKing) {
-            // render to player one king class
-            sqr.className = 'team1-king';
+            updateClasses(sqr, 'team2-king', 'empty', 'team1-piece', 'team2-piece', 'team1-king');
         } else if (piece.player === -1 && piece.isKing) {
-            // render to player two king class
-            sqr.className = 'team2-king';
+            updateClasses(sqr, 'empty', 'team1-piece', 'team2-piece', 'team1-king', 'team2-king');
         }
     });
+}
+
+function updateClasses(sqr, class1, class2, class3, class4, class5) {
+    sqr.classList.remove(class1);
+    sqr.classList.remove(class2);
+    sqr.classList.remove(class3);
+    sqr.classList.remove(class4);
+    sqr.classList.add(class5);
 }
 
 function init() {

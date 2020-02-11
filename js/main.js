@@ -54,6 +54,7 @@ function handleMove(evt) {
             gameState.desiredSqr = evt.target;
             if (gameState.desiredSqr.className === 'empty') {
                 gameState.board[sqrIdx] = new Piece(gameState.turn);
+                gameState.board[playSqrs.indexOf(gameState.selectedPiece)] = null;
                 gameState.selectedPiece = null;
                 gameState.desiredSqr = undefined;
                 gameState.turn *= -1;

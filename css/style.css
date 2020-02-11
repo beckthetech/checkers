@@ -20,43 +20,34 @@ table {
     height: 560px;
     margin: auto;
     border-style: solid;
-    /* border-spacing: 3px; */
-    background-color: aqua;
-    /* position: relative; */
+    /* background-color: aqua; */
+    background-color: rgb(197, 0, 0);
 }
-
-/* tr {
-    height: 70px;
-    width: 70px;
-} */
 
 table td {
     width: 70px;
     height: 70px;
-    /* padding: 30px; */
-    /* position: relative; */
 }
 
 #replay {
     font-size: 15px;
     font-weight: 600;
     margin: 10px;
-    background-color: green;
+    /* background-color: green; */
+    background-color: rgb(197, 0, 0);
     padding: 5px;
 }
 
 .used {
-    background-color: green;
+    background-color: black;
+    /* background-color: green; */
     /* border-radius: 50%; */
-    /* outline: yellow dotted 1px; */
 }
 
 .empty {
-    /* styling for empty, usable square */
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    /* background-color: yellow; */
     margin: -25px -25px;
     position: absolute;
 }
@@ -65,7 +56,8 @@ table td {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: rgb(53, 63, 15);
+    /* background-color: rgb(53, 63, 15); */
+    background-color: whitesmoke;
     margin: -25px -25px;
     position: absolute;
 }
@@ -74,23 +66,24 @@ table td {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: limegreen;
+    /* background-color: limegreen; */
+    background-color: rgb(184, 144, 92);
     margin: -25px -25px;
     position: absolute;
 }
 
 .team1-king {
+    /* styling for team 1 king */
     width: 50px;
     height: 50px;
-    /* styling for team 1 piece */
     margin: -25px -25px;
     position: absolute;
 }
 
 .team2-king {
+    /* styling for team 2 king */
     width: 50px;
     height: 50px;
-    /* styling for team 2 piece */
     margin: -25px -25px;
     position: absolute;
 }

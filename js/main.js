@@ -1,4 +1,9 @@
 /*----- constants -----*/
+const playerIds = {
+    '1': 1,
+    '-1': 2
+}
+
 class Piece {
     constructor(player) {
         this.player = player;
@@ -22,18 +27,16 @@ class Piece {
 }
 
 /*----- app's state (variables) -----*/
-let moveIdx;
-let selectedPiece;
-
 let gameState = {
-
-    board: null, // becomes board array, 32
+    board: null, // becomes board array of 32 playable sqaures
     turn: null,
     win: null,
+    selectedPiece: null,
+    desiredSqr: undefined
 }
 
 /*----- cached element references -----*/
-const playSqrs = Array.from(document.querySelectorAll('td span'));
+let playSqrs = Array.from(document.querySelectorAll('td span'));
 let msgEl = document.querySelector('#msg');
 
 /*----- event listeners -----*/
@@ -44,6 +47,28 @@ document.getElementById('replay').addEventListener('click', init);
 function handleMove(evt) {
     const sqrIdx = playSqrs.indexOf(evt.target);
     if (sqrIdx === -1) return;
+    if (evt.target.className === `team${playerIds[gameState.turn]}-piece` || evt.target.className === `team${playerIds[gameState.turn]}-king` || (gameState.selectedPiece !== null && evt.target.className === 'empty')) {
+        if (gameState.selectedPiece === null) {
+            gameState.selectedPiece = evt.target;
+        } else if (gameState.desiredSqr === undefined) {
+            gameState.desiredSqr = evt.target;
+            if (gameState.desiredSqr.className === 'empty') {
+                gameState.board[sqrIdx] = new Piece(gameState.turn);
+                gameState.selectedPiece = null;
+                gameState.desiredSqr = undefined;
+                gameState.turn *= -1;
+            } else if (gameState.desiredSqr === gameState.selectedPiece) {
+                gameState.selectedPiece = null;
+                gameState.desiredSqr = undefined;
+                return;
+            } else {
+                gameState.desiredSqr = undefined;
+                return;
+            }
+            // check if desired is valid move
+            // create new piece in desired location
+        }
+    }
 
     // check piece clicked against current turn
     // if click on piece
@@ -55,8 +80,9 @@ function handleMove(evt) {
     // call kingMove or kingJump method
 
     // if landed on end square call kingMe function
-    console.log(sqrIdx);
-    render();
+    // console.log(evt.target);
+    // console.log(gameState.selectedPiece);
+    play();
 }
 
 function play() {
@@ -64,15 +90,14 @@ function play() {
     // update positions
     // check for "jumps"
     // remove jumped pieces
-
-    gameState.turn *= -1;
+    render();
 }
 function kingMe() {
     // remove piece object
     // create instance of king object
 }
 function render() {
-    renderBoard();
+    // change value in gamestate.board array of clicked piece
     // remove jumped pieces
     // update positions of pieces moved
     // remove pieces that reach the end
@@ -80,22 +105,26 @@ function render() {
 
     //update "knocked off lillypad" count?
     //update win count per player?
+    renderBoard();
 }
 
 function renderBoard() {
-    debugger;
     gameState.board.forEach((piece, idx) => {
         let sqr = playSqrs[idx];
         if (piece === null) {
             sqr.className = 'empty';
         } else if (piece.player === 1 && !piece.isKing) {
             // render to player one class
+            sqr.className = 'team1-piece';
         } else if (piece.player === -1 && !piece.isKing) {
             // render to player two class
+            sqr.className = 'team2-piece';
         } else if (piece.player === 1 && piece.isKing) {
             // render to player one king class
+            sqr.className = 'team1-king';
         } else if (piece.player === -1 && piece.isKing) {
             // render to player two king class
+            sqr.className = 'team2-king';
         }
     });
 }
@@ -103,10 +132,12 @@ function renderBoard() {
 function init() {
     gameState.board = new Array(32).fill(null);
     for (let i = 0; i < 12; i++) gameState.board[i] = new Piece(1);
-    for (let i = 19; i < 32; i++) gameState.board[i] = new Piece(-1);
+    for (let i = 20; i < 32; i++) gameState.board[i] = new Piece(-1);
 
     gameState.turn = 1;
     gameState.win = null;
+    gameState.selectedPiece = null;
+    gameState.desiredSqr = undefined;
     // call initRender function
     // reset board
     // update win count per player?
@@ -116,6 +147,7 @@ function init() {
     // reset taken pieces count
     // remove kings
     render();
+    console.log(gameState.turn);
 }
 
 init();

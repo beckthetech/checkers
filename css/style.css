@@ -16,18 +16,25 @@ header {
 }
 
 table {
+    width: 560px;
+    height: 560px;
     margin: auto;
     border-style: solid;
     /* border-spacing: 3px; */
     background-color: aqua;
-    position: relative;
+    /* position: relative; */
 }
 
+/* tr {
+    height: 70px;
+    width: 70px;
+} */
+
 table td {
-    width: 30px;
-    height: 30px;
+    width: 70px;
+    height: 70px;
     /* padding: 30px; */
-    position: relative;
+    /* position: relative; */
 }
 
 #replay {
@@ -39,48 +46,51 @@ table td {
 }
 
 .used {
-    padding: 30px;
     background-color: green;
-    border-radius: 50%;
-    /* outline: green dotted 1px; */
-}
-
-.team1 {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: rgb(104, 138, 0);
-    margin: 5px auto;
-    position: absolute;
-}
-
-.team2{
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: limegreen;
-    margin: 5px auto;
-    position: absolute;
+    /* border-radius: 50%; */
+    /* outline: yellow dotted 1px; */
 }
 
 .empty {
-    width: 30px;
-    height: 30px;
+    /* styling for empty, usable square */
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    background-color: purple;
-    margin: 5px auto;
+    /* background-color: yellow; */
+    margin: -25px -25px;
     position: absolute;
 }
 
-/* .team1 {
-    position: absolute;
-    padding: 18px;
+.team1-piece {
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
+    background-color: rgb(53, 63, 15);
+    margin: -25px -25px;
+    position: absolute;
 }
 
-.team2 {
-
-    position: absolute;
-    padding: 18px;
+.team2-piece {
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-} */
+    background-color: limegreen;
+    margin: -25px -25px;
+    position: absolute;
+}
+
+.team1-king {
+    width: 50px;
+    height: 50px;
+    /* styling for team 1 piece */
+    margin: -25px -25px;
+    position: absolute;
+}
+
+.team2-king {
+    width: 50px;
+    height: 50px;
+    /* styling for team 2 piece */
+    margin: -25px -25px;
+    position: absolute;
+}

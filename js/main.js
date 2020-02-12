@@ -12,10 +12,28 @@ class Piece {
     // move behavior
 
     move() {
-        if (isKing) {
+        if (this.isKing) {
             // king move logic
         } else {
             // piece move logic
+            if (desiredSqrClasses.includes('even') && selectedPieceClasses.includes('even') || desiredSqrClasses.includes('odd') && selectedPieceClasses.includes('odd')) {
+                gameState.desiredSqr = undefined;
+                return;
+            } else {
+                if (selectedPieceIdx + (this.player * 4) === desiredSqrIdx) {
+                    movePiece()
+                    // gameState.board[desiredSqrIdx] = new Piece(gameState.turn);
+                    // gameState.selectedPiece.classList.remove('selected');
+                    // gameState.board[selectedPieceIdx] = null;
+                    // resetSelectors();
+                    // gameState.turn *= -1;
+                } else if (selectedPieceIdx + (this.player * 5) === desiredSqrIdx && edgePieceCheck(selectedPieceIdx)) {
+                    movePiece();
+                } else {
+                    gameState.desiredSqr = undefined;
+                }
+            }
+
         }
         // check if king
         // move forward diagonal
@@ -34,6 +52,14 @@ class Piece {
         // jump forward again
         //  ''
     }
+    // check piece clicked against current turn
+    // if click on piece
+    // check if move or jump
+    // call pieceMove or pieceJump method
+
+    // if click on king
+    // check if move or jump
+    // call kingMove or kingJump method
 }
 
 /*----- app's state (variables) -----*/
@@ -44,6 +70,11 @@ let gameState = {
     selectedPiece: null,
     desiredSqr: undefined
 }
+let selectedPieceIdx = NaN;
+let desiredSqrIdx = NaN;
+let selectedPieceClasses = [];
+let desiredSqrClasses = [];
+let sqrIdx = NaN;
 
 /*----- cached element references -----*/
 let playSqrs = Array.from(document.querySelectorAll('td span'));
@@ -55,73 +86,60 @@ document.getElementById('replay').addEventListener('click', init);
 
 /*----- functions -----*/
 function handleMove(evt) {
-    const sqrIdx = playSqrs.indexOf(evt.target);
+    sqrIdx = playSqrs.indexOf(evt.target);
     if (sqrIdx === -1) return;
     let eventClasses = Array.from(evt.target.classList);
     if (eventClasses.includes(`team${playerIds[gameState.turn]}-piece`) || eventClasses.includes(`team${playerIds[gameState.turn]}-king`) || (gameState.selectedPiece !== null && eventClasses.includes('empty'))) {
         if (gameState.selectedPiece === null) {
-            setSelectedPiece(evt);
+            setSelectedPiece(evt, eventClasses, sqrIdx);
         } else if (gameState.desiredSqr === undefined) {
-            setDesiredPiece(evt, sqrIdx);
+            setRowClasses();
+            setDesiredPiece(evt, sqrIdx, eventClasses);
         }
     }
-    // check piece clicked against current turn
-    // if click on piece
-    // check if move or jump
-    // call pieceMove or pieceJump method
-
-    // if click on king
-    // check if move or jump
-    // call kingMove or kingJump method
-
     // if landed on end square call kingMe function
     render();
 }
 
 function render() {
-    // change value in gamestate.board array of clicked piece
-    // remove jumped pieces
-    // update positions of pieces moved
-    // remove pieces that reach the end
-    // if pieces reach end, add kings
-    
+    // update message for player turn
+    // display win message
     //update "knocked off lillypad" count?
     //update win count per player?
     renderBoard();
 }
 
-
-
 function init() {
     gameState.board = new Array(32).fill(null);
     for (let i = 0; i < 12; i++) gameState.board[i] = new Piece(1);
     for (let i = 20; i < 32; i++) gameState.board[i] = new Piece(-1);
-    
     gameState.turn = 1;
     gameState.win = null;
     resetSelectors();
+    setRowClasses();
     // reset board
     // update win count per player?
-    
-    // reset play state
-    // initialize starting pieces
     // reset taken pieces count
-    // remove kings
     render();
 }
 
-function setSelectedPiece(evt) {
-    gameState.selectedPiece = evt.target;
-    gameState.selectedPiece.classList.add('selected');
+function movePiece() {
+    gameState.board[desiredSqrIdx] = new Piece(gameState.turn);
+    gameState.selectedPiece.classList.remove('selected');
+    gameState.board[selectedPieceIdx] = null;
+    resetSelectors();
+    gameState.turn *= -1;
 }
-function setDesiredPiece(evt, sqrIdx) {
+function edgePieceCheck(pieceIdx) {
+    let edgeSqrs = [3, 4, 11, 12, 19, 20, 27, 28];
+    return edgeSqrs.includes(pieceIdx) ? false : true;
+}
+function setDesiredPiece(evt, sqrIdx, eventClasses) {
+    desiredSqrIdx = sqrIdx;
+    desiredSqrClasses = eventClasses;
     gameState.desiredSqr = evt.target;
-    if (gameState.desiredSqr.className === 'empty') {
-        gameState.board[sqrIdx] = new Piece(gameState.turn);
-        gameState.selectedPiece.classList.remove('selected');
-        gameState.board[playSqrs.indexOf(gameState.selectedPiece)] = null;
-        resetSelectors();
-        gameState.turn *= -1;
+    if (desiredSqrClasses.includes('empty')) {
+        gameState.board[selectedPieceIdx].move();
     } else if (gameState.desiredSqr === gameState.selectedPiece) {
         gameState.selectedPiece.classList.remove('selected');
         resetSelectors();
@@ -131,9 +149,44 @@ function setDesiredPiece(evt, sqrIdx) {
         return;
     }
 }
+function setSelectedPiece(evt, eventClasses, sqrIdx) {
+    gameState.selectedPiece = evt.target;
+    gameState.selectedPiece.classList.add('selected');
+    selectedPieceClasses = eventClasses;
+    selectedPieceIdx = sqrIdx;
+}
 function resetSelectors() {
     gameState.selectedPiece = null;
     gameState.desiredSqr = undefined;
+}
+function setRowClasses() {
+    playSqrs.forEach((piece, idx) => {
+        if (idx < 4) {
+            addOdd(piece);
+        } else if (idx < 8) {
+            addEven(piece);
+        } else if (idx < 12) {
+            addOdd(piece)
+        } else if (idx < 16) {
+            addEven(piece);
+        } else if (idx < 20) {
+            addOdd(piece)
+        } else if (idx < 24) {
+            addEven(piece);
+        } else if (idx < 28) {
+            addOdd(piece)
+        } else if (idx < 32) {
+            addEven(piece);
+        }
+    });
+    function addOdd(piece) {
+        piece.classList.add('odd');
+        piece.classList.remove('even');
+    }
+    function addEven(piece) {
+        piece.classList.add('even');
+        piece.classList.remove('odd');
+    }
 }
 function kingMe() {
     // change isKing property to true

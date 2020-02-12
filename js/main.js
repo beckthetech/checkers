@@ -9,44 +9,26 @@ class Piece {
         this.player = player;
         this.isKing = false;
     }
-    // move behavior
-
     move() {
         if (this.isKing) {
             // king move logic
 
         } else {
-            if (this.player === 1) {
+            if (selectedPieceClasses.includes('even') && desiredSqrClasses.includes('even') || selectedPieceClasses.includes('odd') && desiredSqrClasses.includes('odd')) {
+                jumpCheck(7, 9)
+            } else if (this.player === 1) {
                 moveCheck(4, 5);
             } else if (this.player === -1) {
                 moveCheck(3, 4);
-            }
-        }
-        // check if king
-        // move forward diagonal
-        // pass in variable of selected piece
-        // pass in variable of desired space
-    }
-    jump() {
-        if (isKing) {
-            // king jump logic
-        } else {
-            // piece jump logic
-            if (selectedPieceClasses.includes('even') && selectedPieceClasses.includes('even') || desiredSqrClasses.includes('odd') && selectedPieceClasses.includes('odd')) {
+            } else {
                 gameState.desiredSqr = undefined;
                 return;
             }
         }
-        // check if king
-        // jump forward over one piece
-        // check for available jump forward
-        // jump forward again
-        //  ''
     }
-    // check piece clicked against current turn
-    // if click on piece
-    // check if move or jump
-    // call pieceMove or pieceJump method
+    // check for available jump forward
+    // jump forward again
+    // chain jumps? - don't switch turn yet to allow for second jump?
 
     // if click on king
     // check if move or jump
@@ -129,11 +111,18 @@ function moveCheck(move1, move2) {
             gameState.desiredSqr = undefined;
         }
     } else if (selectedPieceClasses.includes('even')) {
-        if (selectedPieceIdx + (gameState.turn * (move1-gameState.turn)) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * (move2-gameState.turn)) === desiredSqrIdx) {
+        if (selectedPieceIdx + (gameState.turn * (move1 - gameState.turn)) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * (move2 - gameState.turn)) === desiredSqrIdx) {
             movePiece()
         } else {
             gameState.desiredSqr = undefined;
         }
+    }
+}
+function jumpCheck(move1, move2) {
+    if (selectedPieceIdx + (gameState.turn * move1) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * move2) === desiredSqrIdx) {
+        movePiece()
+    } else {
+        gameState.desiredSqr = undefined;
     }
 }
 function edgeCheck() {
@@ -212,13 +201,13 @@ function renderBoard() {
             updateClasses(sqr, 'empty', 'team1-piece', 'team2-piece', 'team1-king', 'team2-king');
         }
     });
-}
-function updateClasses(sqr, class1, class2, class3, class4, class5) {
-    sqr.classList.remove(class1);
-    sqr.classList.remove(class2);
-    sqr.classList.remove(class3);
-    sqr.classList.remove(class4);
-    sqr.classList.add(class5);
+    function updateClasses(sqr, class1, class2, class3, class4, class5) {
+        sqr.classList.remove(class1);
+        sqr.classList.remove(class2);
+        sqr.classList.remove(class3);
+        sqr.classList.remove(class4);
+        sqr.classList.add(class5);
+    }
 }
 
 init();

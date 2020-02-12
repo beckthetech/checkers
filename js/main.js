@@ -14,26 +14,13 @@ class Piece {
     move() {
         if (this.isKing) {
             // king move logic
-        } else {
-            // piece move logic
-            if (desiredSqrClasses.includes('even') && selectedPieceClasses.includes('even') || desiredSqrClasses.includes('odd') && selectedPieceClasses.includes('odd')) {
-                gameState.desiredSqr = undefined;
-                return;
-            } else {
-                if (selectedPieceIdx + (this.player * 4) === desiredSqrIdx) {
-                    movePiece()
-                    // gameState.board[desiredSqrIdx] = new Piece(gameState.turn);
-                    // gameState.selectedPiece.classList.remove('selected');
-                    // gameState.board[selectedPieceIdx] = null;
-                    // resetSelectors();
-                    // gameState.turn *= -1;
-                } else if (selectedPieceIdx + (this.player * 5) === desiredSqrIdx && edgePieceCheck(selectedPieceIdx)) {
-                    movePiece();
-                } else {
-                    gameState.desiredSqr = undefined;
-                }
-            }
 
+        } else {
+            if (this.player === 1) {
+                moveCheck(4, 5);
+            } else if (this.player === -1) {
+                moveCheck(3, 4);
+            }
         }
         // check if king
         // move forward diagonal
@@ -45,6 +32,10 @@ class Piece {
             // king jump logic
         } else {
             // piece jump logic
+            if (selectedPieceClasses.includes('even') && selectedPieceClasses.includes('even') || desiredSqrClasses.includes('odd') && selectedPieceClasses.includes('odd')) {
+                gameState.desiredSqr = undefined;
+                return;
+            }
         }
         // check if king
         // jump forward over one piece
@@ -115,9 +106,9 @@ function init() {
     for (let i = 20; i < 32; i++) gameState.board[i] = new Piece(-1);
     gameState.turn = 1;
     gameState.win = null;
+    gameState.selectedPiece !== null ? gameState.selectedPiece.classList.remove('selected') : true;
     resetSelectors();
     setRowClasses();
-    // reset board
     // update win count per player?
     // reset taken pieces count
     render();
@@ -130,9 +121,24 @@ function movePiece() {
     resetSelectors();
     gameState.turn *= -1;
 }
-function edgePieceCheck(pieceIdx) {
+function moveCheck(move1, move2) {
+    if (selectedPieceClasses.includes('odd')) {
+        if (selectedPieceIdx + (gameState.turn * move1) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * move2) === desiredSqrIdx) {
+            movePiece()
+        } else {
+            gameState.desiredSqr = undefined;
+        }
+    } else if (selectedPieceClasses.includes('even')) {
+        if (selectedPieceIdx + (gameState.turn * (move1-gameState.turn)) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * (move2-gameState.turn)) === desiredSqrIdx) {
+            movePiece()
+        } else {
+            gameState.desiredSqr = undefined;
+        }
+    }
+}
+function edgeCheck() {
     let edgeSqrs = [3, 4, 11, 12, 19, 20, 27, 28];
-    return edgeSqrs.includes(pieceIdx) ? false : true;
+    return !edgeSqrs.includes(selectedPieceIdx) ? !edgeSqrs.includes(desiredSqrIdx) : false;
 }
 function setDesiredPiece(evt, sqrIdx, eventClasses) {
     desiredSqrIdx = sqrIdx;

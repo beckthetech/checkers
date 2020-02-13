@@ -17,19 +17,19 @@ class Piece {
             if (selectedPieceClasses.includes('even') && desiredSqrClasses.includes('even') || selectedPieceClasses.includes('odd') && desiredSqrClasses.includes('odd')) {
                 if (selectedPieceClasses.includes('odd')) {
                     if (selectedPieceClasses.includes('team1-piece') || selectedPieceClasses.includes('team1-king')) {
-                        // debugger;
-                        jumpCheck(4, 5);
+                        debugger;
+                        jumpCheck(4, 5, 3, 4);
                     } else if (selectedPieceClasses.includes('team2-piece') || selectedPieceClasses.includes('team2-king')) {
-                        // debugger;
-                        jumpCheck(3, 4);
+                        debugger;
+                        jumpCheck(3, 4, 4, 5);
                     }
                 } else if (selectedPieceClasses.includes('even')) {
                     if (selectedPieceClasses.includes('team1-piece') || selectedPieceClasses.includes('team1-king')) {
-                        // debugger;
-                        jumpCheck(3, 4);
+                        debugger;
+                        jumpCheck(3, 4, 4, 5);
                     } else if (selectedPieceClasses.includes('team2-piece') || selectedPieceClasses.includes('team2-king')) {
-                        // debugger;
-                        jumpCheck(4, 5);
+                        debugger;
+                        jumpCheck(4, 5, 3, 4);
                     }
                 }
                 gameState.desiredSqr = undefined;
@@ -43,13 +43,6 @@ class Piece {
             }
         }
     }
-    // check for available jump forward
-    // jump forward again
-    // chain jumps? - don't switch turn yet to allow for second jump?
-
-    // if click on king
-    // check if move or jump
-    // call kingMove or kingJump method
 }
 
 /*----- app's state (variables) -----*/
@@ -89,7 +82,6 @@ function handleMove(evt) {
             setDesiredPiece(evt, sqrIdx, eventClasses);
         }
     }
-    // if landed on end square call kingMe function
     render();
 }
 
@@ -117,7 +109,7 @@ function init() {
 
 function movePiece() {
     gameState.board[desiredSqrIdx] = new Piece(gameState.turn);
-    kingMe()
+    // kingMe()
     gameState.selectedPiece.classList.remove('selected');
     gameState.board[selectedPieceIdx] = null;
     resetSelectors();
@@ -138,14 +130,14 @@ function moveCheck(move1, move2) {
         }
     }
 }
-function jumpCheck(move1, move2) {
+function jumpCheck(move1, move2, move1A, move2A) {
     jumpedPieceIds[1] = selectedPieceIdx + (gameState.turn * move1);
     jumpedPieceIds[2] = selectedPieceIdx + (gameState.turn * move2);
     jumpedPieceClasses[1] = Array.from((playSqrs[jumpedPieceIds[1]]).classList);
     jumpedPieceClasses[2] = Array.from((playSqrs[jumpedPieceIds[2]]).classList);
 
     if (jumpedPieceClasses[1].includes(`team${playerIds[gameState.turn * -1]}-piece`)) {
-        if (selectedPieceIdx + (gameState.turn * 7) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * 9) === desiredSqrIdx) {
+        if (jumpedPieceIds[1] + (gameState.turn * move1A) === desiredSqrIdx) {
             movePiece();
             gameState.board[jumpedPieceIds[1]] = null;
             jumpedPieceIds[1] = NaN;
@@ -153,7 +145,7 @@ function jumpCheck(move1, move2) {
         }
     }
     if (jumpedPieceClasses[2].includes(`team${playerIds[gameState.turn * -1]}-piece`)) {
-        if (selectedPieceIdx + (gameState.turn * 7) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * 9) === desiredSqrIdx) {
+        if (jumpedPieceIds[2] + (gameState.turn * move2A) === desiredSqrIdx) {
             movePiece();
             gameState.board[jumpedPieceIds[2]] = null;
             jumpedPieceIds[2] = NaN;
@@ -222,10 +214,12 @@ function kingMe() {
     let kingsRowEven = [28, 29, 30, 31];
     if (kingsRowOdd.includes(playSqrs[gameState.desiredSqr])) {
         gameState.board[desiredSqr].isKing = true;
+        console.log(gameState.board[desiredSqr].isKing);
         // gameState.board[gameState.desiredSqr].classList.add('team2-king');
         // gameState.board[gameState.desiredSqr].classList.remove('team2-piece');
     } else if (kingsRowEven.includes(playSqrs[gameState.desiredSqr])) {
         gameState.board[desiredSqr].isKing = true;
+        console.log(gameState.board[desiredSqr].isKing);
         // gameState.board[gameState.desiredSqr].classList.add('team1-king');
         // gameState.board[gameState.desiredSqr].classList.remove('team1-piece');
     }

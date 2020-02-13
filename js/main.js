@@ -129,17 +129,14 @@ function jumpCheck(move1, move2, i) {
     if (jumpedPieceClasses[i].includes(`team${playerIds[gameState.turn * -1]}-piece`)) {
         if (selectedPieceIdx + (gameState.turn * move1) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * move2) === desiredSqrIdx) {
             movePiece();
+            removeJumpedPiece(i);
         }
     }
-    jumpedPieceCheckIdx1 = NaN;
-    jumpedPieceCheckIdx2 = NaN;
-    return;
-}
-function removeJumpedPiece() {
-    if (playSqrs[jumpedPieceCheckIdx1]) {
-        gameState.board[jumpedPieceCheckIdx1] = null;
-        gameState.board[jumpedPieceCheckIdx2] = null;
+    function removeJumpedPiece(i) {
+        gameState.board[jumpedPieceIds[i]] = null;
     }
+    jumpedPieceIds[i] = NaN;
+    return;
 }
 function edgeCheck() {
     let edgeSqrs = [3, 4, 11, 12, 19, 20, 27, 28];

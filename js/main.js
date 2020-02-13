@@ -15,7 +15,9 @@ class Piece {
 
         } else {
             if (selectedPieceClasses.includes('even') && desiredSqrClasses.includes('even') || selectedPieceClasses.includes('odd') && desiredSqrClasses.includes('odd')) {
-                jumpCheck(7, 9)
+                jumpCheck(7, 9, 1)
+                jumpCheck(7, 9, 2)
+                gameState.desiredSqr = undefined;
             } else if (this.player === 1) {
                 moveCheck(4, 5);
             } else if (this.player === -1) {
@@ -43,10 +45,12 @@ let gameState = {
     selectedPiece: null,
     desiredSqr: undefined
 }
-let selectedPieceIdx = NaN;
-let desiredSqrIdx = NaN;
 let selectedPieceClasses = [];
 let desiredSqrClasses = [];
+let jumpedPieceClasses = {};
+let jumpedPieceIds = {};
+let selectedPieceIdx = NaN;
+let desiredSqrIdx = NaN;
 let sqrIdx = NaN;
 
 /*----- cached element references -----*/
@@ -118,11 +122,23 @@ function moveCheck(move1, move2) {
         }
     }
 }
-function jumpCheck(move1, move2) {
-    if (selectedPieceIdx + (gameState.turn * move1) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * move2) === desiredSqrIdx) {
-        movePiece()
-    } else {
-        gameState.desiredSqr = undefined;
+function jumpCheck(move1, move2, i) {
+    jumpedPieceIds[1] = desiredSqrIdx - (gameState.turn * 3);
+    jumpedPieceIds[2] = desiredSqrIdx - (gameState.turn * 4);
+    jumpedPieceClasses[i] = Array.from((playSqrs[jumpedPieceIds[i]]).classList);
+    if (jumpedPieceClasses[i].includes(`team${playerIds[gameState.turn * -1]}-piece`)) {
+        if (selectedPieceIdx + (gameState.turn * move1) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * move2) === desiredSqrIdx) {
+            movePiece();
+        }
+    }
+    jumpedPieceCheckIdx1 = NaN;
+    jumpedPieceCheckIdx2 = NaN;
+    return;
+}
+function removeJumpedPiece() {
+    if (playSqrs[jumpedPieceCheckIdx1]) {
+        gameState.board[jumpedPieceCheckIdx1] = null;
+        gameState.board[jumpedPieceCheckIdx2] = null;
     }
 }
 function edgeCheck() {
@@ -153,6 +169,8 @@ function setSelectedPiece(evt, eventClasses, sqrIdx) {
 function resetSelectors() {
     gameState.selectedPiece = null;
     gameState.desiredSqr = undefined;
+    jumpedPieceCheckIdx1 = NaN;
+    jumpedPieceCheckIdx2 = NaN;
 }
 function setRowClasses() {
     playSqrs.forEach((piece, idx) => {

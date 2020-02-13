@@ -17,18 +17,18 @@ class Piece {
             if (selectedPieceClasses.includes('even') && desiredSqrClasses.includes('even') || selectedPieceClasses.includes('odd') && desiredSqrClasses.includes('odd')) {
                 if (selectedPieceClasses.includes('odd')) {
                     if (selectedPieceClasses.includes('team1-piece') || selectedPieceClasses.includes('team1-king')) {
-                        debugger;
+                        // debugger;
                         jumpCheck(4, 5, 3, 4);
                     } else if (selectedPieceClasses.includes('team2-piece') || selectedPieceClasses.includes('team2-king')) {
-                        debugger;
+                        // debugger;
                         jumpCheck(3, 4, 4, 5);
                     }
                 } else if (selectedPieceClasses.includes('even')) {
                     if (selectedPieceClasses.includes('team1-piece') || selectedPieceClasses.includes('team1-king')) {
-                        debugger;
+                        // debugger;
                         jumpCheck(3, 4, 4, 5);
                     } else if (selectedPieceClasses.includes('team2-piece') || selectedPieceClasses.includes('team2-king')) {
-                        debugger;
+                        // debugger;
                         jumpCheck(4, 5, 3, 4);
                     }
                 }

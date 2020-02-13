@@ -15,8 +15,7 @@ class Piece {
 
         } else {
             if (selectedPieceClasses.includes('even') && desiredSqrClasses.includes('even') || selectedPieceClasses.includes('odd') && desiredSqrClasses.includes('odd')) {
-                jumpCheck(7, 9, 1)
-                jumpCheck(7, 9, 2)
+                jumpCheck(7, 9, 2);
                 gameState.desiredSqr = undefined;
             } else if (this.player === 1) {
                 moveCheck(4, 5);
@@ -123,17 +122,24 @@ function moveCheck(move1, move2) {
     }
 }
 function jumpCheck(move1, move2, i) {
-    jumpedPieceIds[1] = desiredSqrIdx - (gameState.turn * 3);
-    jumpedPieceIds[2] = desiredSqrIdx - (gameState.turn * 4);
-    jumpedPieceClasses[i] = Array.from((playSqrs[jumpedPieceIds[i]]).classList);
-    if (jumpedPieceClasses[i].includes(`team${playerIds[gameState.turn * -1]}-piece`)) {
-        if (selectedPieceIdx + (gameState.turn * move1) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * move2) === desiredSqrIdx) {
-            movePiece();
-            removeJumpedPiece(i);
-        }
+    let move1A = move1;
+    let move2A = move2;
+    if (selectedPieceClasses.includes('odd')) {
+        move1 += 4;
+        move2 += 4;
+        move1A = move1 - 2;
+        move2A = move2 - 2;
+        i -= 1;
     }
-    function removeJumpedPiece(i) {
-        gameState.board[jumpedPieceIds[i]] = null;
+    jumpedPieceIds[1] = desiredSqrIdx - (gameState.turn * ((move1 - 1) / 2));
+    jumpedPieceIds[2] = desiredSqrIdx - (gameState.turn * ((move2 - 1) / 2));
+    jumpedPieceClasses[i] = Array.from((playSqrs[jumpedPieceIds[i]]).classList);
+
+    if (jumpedPieceClasses[i].includes(`team${playerIds[gameState.turn * -1]}-piece`)) {
+        if (selectedPieceIdx + (gameState.turn * move1A) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * move2A) === desiredSqrIdx) {
+            movePiece();
+            gameState.board[jumpedPieceIds[i]] = null;
+        }
     }
     jumpedPieceIds[i] = NaN;
     return;

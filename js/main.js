@@ -15,7 +15,11 @@ class Piece {
 
         } else {
             if (selectedPieceClasses.includes('even') && desiredSqrClasses.includes('even') || selectedPieceClasses.includes('odd') && desiredSqrClasses.includes('odd')) {
-                jumpCheck(7, 9, 2);
+                if (selectedPieceClasses.includes('even')) {
+                    jumpCheck(3, 4);
+                } else if (selectedPieceClasses.includes('odd')) {
+                    jumpCheck(4, 5);
+                }
                 gameState.desiredSqr = undefined;
             } else if (this.player === 1) {
                 moveCheck(4, 5);
@@ -101,6 +105,7 @@ function init() {
 
 function movePiece() {
     gameState.board[desiredSqrIdx] = new Piece(gameState.turn);
+    // kingMe()
     gameState.selectedPiece.classList.remove('selected');
     gameState.board[selectedPieceIdx] = null;
     resetSelectors();
@@ -121,32 +126,29 @@ function moveCheck(move1, move2) {
         }
     }
 }
-function jumpCheck(move1, move2, i) {
-    let move1A = move1;
-    let move2A = move2;
-    if (selectedPieceClasses.includes('odd')) {
-        move1 += 4;
-        move2 += 4;
-        move1A = move1 - 2;
-        move2A = move2 - 2;
-        i -= 1;
-    }
-    jumpedPieceIds[1] = desiredSqrIdx - (gameState.turn * ((move1 - 1) / 2));
-    jumpedPieceIds[2] = desiredSqrIdx - (gameState.turn * ((move2 - 1) / 2));
-    jumpedPieceClasses[i] = Array.from((playSqrs[jumpedPieceIds[i]]).classList);
+function jumpCheck(move1, move2) {
+    debugger;
+    jumpedPieceIds[1] = desiredSqrIdx - (gameState.turn * move1);
+    jumpedPieceIds[2] = desiredSqrIdx - (gameState.turn * move2);
+    jumpedPieceClasses[1] = Array.from((playSqrs[jumpedPieceIds[1]]).classList);
+    jumpedPieceClasses[2] = Array.from((playSqrs[jumpedPieceIds[2]]).classList);
 
-    if (jumpedPieceClasses[i].includes(`team${playerIds[gameState.turn * -1]}-piece`)) {
-        if (selectedPieceIdx + (gameState.turn * move1A) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * move2A) === desiredSqrIdx) {
+    if (jumpedPieceClasses[1].includes(`team${playerIds[gameState.turn * -1]}-piece`)) {
+        if (selectedPieceIdx + (gameState.turn * 7) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * 9) === desiredSqrIdx) {
             movePiece();
-            gameState.board[jumpedPieceIds[i]] = null;
+            gameState.board[jumpedPieceIds[1]] = null;
+            jumpedPieceIds[1] = NaN;
+            return;
         }
     }
-    jumpedPieceIds[i] = NaN;
-    return;
-}
-function edgeCheck() {
-    let edgeSqrs = [3, 4, 11, 12, 19, 20, 27, 28];
-    return !edgeSqrs.includes(selectedPieceIdx) ? !edgeSqrs.includes(desiredSqrIdx) : false;
+    if (jumpedPieceClasses[2].includes(`team${playerIds[gameState.turn * -1]}-piece`)) {
+        if (selectedPieceIdx + (gameState.turn * 7) === desiredSqrIdx || selectedPieceIdx + (gameState.turn * 9) === desiredSqrIdx) {
+            movePiece();
+            gameState.board[jumpedPieceIds[2]] = null;
+            jumpedPieceIds[2] = NaN;
+            return;
+        }
+    }
 }
 function setDesiredPiece(evt, sqrIdx, eventClasses) {
     desiredSqrIdx = sqrIdx;
@@ -205,6 +207,16 @@ function setRowClasses() {
     }
 }
 function kingMe() {
+    let kingsRowOdd = [0, 1, 2, 3];
+    let kingsRowEven = [28, 29, 30, 31];
+    if (kingsRowOdd.includes(playSqrs[gameState.desiredSqr])) {
+        gameState.board[gameState.desiredSqr].classList.add('team2-king');
+        gameState.board[gameState.desiredSqr].classList.remove('team2-piece');
+    } else if (kingsRowEven.includes(playSqrs[gameState.desiredSqr])) {
+        gameState.board[gameState.desiredSqr].classList.add('team1-king');
+        gameState.board[gameState.desiredSqr].classList.remove('team1-piece');
+    }
+    // gameState.board[desiredSqr].isKing = true;
     // change isKing property to true
 }
 function renderBoard() {
@@ -229,6 +241,11 @@ function renderBoard() {
         sqr.classList.remove(class4);
         sqr.classList.add(class5);
     }
+}
+
+function edgeCheck() {
+    let edgeSqrs = [3, 4, 11, 12, 19, 20, 27, 28];
+    return !edgeSqrs.includes(selectedPieceIdx) ? !edgeSqrs.includes(desiredSqrIdx) : false;
 }
 
 init();

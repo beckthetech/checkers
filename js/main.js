@@ -227,7 +227,7 @@ function winCheck() {
     } else if (p2Count === 0) {
         msgEl.textContent = 'Well done, Player 1! Click below to play again.'
     }
-    if (turnCounter === 40) {
+    if (turnCounter === 60) {
         if (p1Count === p2Count) {
             gameState.win = 'tie';
             msgEl.textContent = "It's a tie! Click below to play again."

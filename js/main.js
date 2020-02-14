@@ -12,33 +12,28 @@ class Piece {
         this.isKing = false;
     }
     move() {
-        if (this.isKing) {
-            // king move logic
-
-        } else {
-            if (selectedPieceClasses.includes('even') && desiredSqrClasses.includes('even') || selectedPieceClasses.includes('odd') && desiredSqrClasses.includes('odd')) {
-                if (selectedPieceClasses.includes('odd')) {
-                    if (selectedPieceClasses.includes('team1-piece') || selectedPieceClasses.includes('team1-king')) {
-                        jumpCheck(4, 5, 3, 4);
-                    } else if (selectedPieceClasses.includes('team2-piece') || selectedPieceClasses.includes('team2-king')) {
-                        jumpCheck(3, 4, 4, 5);
-                    }
-                } else if (selectedPieceClasses.includes('even')) {
-                    if (selectedPieceClasses.includes('team1-piece') || selectedPieceClasses.includes('team1-king')) {
-                        jumpCheck(3, 4, 4, 5);
-                    } else if (selectedPieceClasses.includes('team2-piece') || selectedPieceClasses.includes('team2-king')) {
-                        jumpCheck(4, 5, 3, 4);
-                    }
+        if (selectedPieceClasses.includes('even') && desiredSqrClasses.includes('even') || selectedPieceClasses.includes('odd') && desiredSqrClasses.includes('odd')) {
+            if (selectedPieceClasses.includes('odd')) {
+                if (selectedPieceClasses.includes('team1-piece') || selectedPieceClasses.includes('team1-king')) {
+                    jumpCheck(4, 5, 3, 4);
+                } else if (selectedPieceClasses.includes('team2-piece') || selectedPieceClasses.includes('team2-king')) {
+                    jumpCheck(3, 4, 4, 5);
                 }
-                gameState.desiredSqr = undefined;
-            } else if (this.player === 1) {
-                moveCheck(4, 5);
-            } else if (this.player === -1) {
-                moveCheck(3, 4);
-            } else {
-                gameState.desiredSqr = undefined;
-                return;
+            } else if (selectedPieceClasses.includes('even')) {
+                if (selectedPieceClasses.includes('team1-piece') || selectedPieceClasses.includes('team1-king')) {
+                    jumpCheck(3, 4, 4, 5);
+                } else if (selectedPieceClasses.includes('team2-piece') || selectedPieceClasses.includes('team2-king')) {
+                    jumpCheck(4, 5, 3, 4);
+                }
             }
+            gameState.desiredSqr = undefined;
+        } else if (this.player === 1) {
+            moveCheck(4, 5);
+        } else if (this.player === -1) {
+            moveCheck(3, 4);
+        } else {
+            gameState.desiredSqr = undefined;
+            return;
         }
     }
 }
@@ -47,7 +42,7 @@ class Piece {
 let turnCounter = 0;
 
 let gameState = {
-    board: null, // becomes board array of 32 playable sqaures
+    board: null,
     turn: null,
     win: null,
     selectedPiece: null,
@@ -89,8 +84,6 @@ function handleMove(evt) {
 
 function render() {
     msgEl.textContent = `Player's ${playerIds[gameState.turn]} turn!`
-    //update "knocked off lillypad" count?
-    //update win count per player?
     winCheck();
     renderBoard();
 }
@@ -214,7 +207,6 @@ function setRowClasses() {
 function kingMe() {
     if (kingsRow.includes(desiredSqrIdx)) {
         gameState.board[desiredSqrIdx] = null;
-        // gameState.board[desiredSqrIdx].isKing = true;
     }
 }
 function winCheck() {

@@ -4,6 +4,8 @@ const playerIds = {
     '-1': 2
 }
 
+const kingsRow = [0, 1, 2, 3, 28, 29, 30, 31];
+
 class Piece {
     constructor(player) {
         this.player = player;
@@ -17,18 +19,14 @@ class Piece {
             if (selectedPieceClasses.includes('even') && desiredSqrClasses.includes('even') || selectedPieceClasses.includes('odd') && desiredSqrClasses.includes('odd')) {
                 if (selectedPieceClasses.includes('odd')) {
                     if (selectedPieceClasses.includes('team1-piece') || selectedPieceClasses.includes('team1-king')) {
-                        // debugger;
                         jumpCheck(4, 5, 3, 4);
                     } else if (selectedPieceClasses.includes('team2-piece') || selectedPieceClasses.includes('team2-king')) {
-                        // debugger;
                         jumpCheck(3, 4, 4, 5);
                     }
                 } else if (selectedPieceClasses.includes('even')) {
                     if (selectedPieceClasses.includes('team1-piece') || selectedPieceClasses.includes('team1-king')) {
-                        // debugger;
                         jumpCheck(3, 4, 4, 5);
                     } else if (selectedPieceClasses.includes('team2-piece') || selectedPieceClasses.includes('team2-king')) {
-                        // debugger;
                         jumpCheck(4, 5, 3, 4);
                     }
                 }
@@ -46,6 +44,8 @@ class Piece {
 }
 
 /*----- app's state (variables) -----*/
+let turnCounter = 0;
+
 let gameState = {
     board: null, // becomes board array of 32 playable sqaures
     turn: null,
@@ -53,6 +53,7 @@ let gameState = {
     selectedPiece: null,
     desiredSqr: undefined
 }
+
 let selectedPieceClasses = [];
 let desiredSqrClasses = [];
 let jumpedPieceClasses = {};
@@ -60,6 +61,7 @@ let jumpedPieceIds = {};
 let selectedPieceIdx = NaN;
 let desiredSqrIdx = NaN;
 let sqrIdx = NaN;
+let winCountArray = [];
 
 /*----- cached element references -----*/
 let playSqrs = Array.from(document.querySelectorAll('td span'));
@@ -86,10 +88,10 @@ function handleMove(evt) {
 }
 
 function render() {
-    // update message for player turn
-    // display win message
+    msgEl.textContent = `Player's ${playerIds[gameState.turn]} turn!`
     //update "knocked off lillypad" count?
     //update win count per player?
+    winCheck();
     renderBoard();
 }
 
@@ -98,22 +100,22 @@ function init() {
     for (let i = 0; i < 12; i++) gameState.board[i] = new Piece(1);
     for (let i = 20; i < 32; i++) gameState.board[i] = new Piece(-1);
     gameState.turn = 1;
+    turnCounter = 0;
     gameState.win = null;
     gameState.selectedPiece !== null ? gameState.selectedPiece.classList.remove('selected') : true;
     resetSelectors();
     setRowClasses();
-    // update win count per player?
-    // reset taken pieces count
     render();
 }
 
 function movePiece() {
     gameState.board[desiredSqrIdx] = new Piece(gameState.turn);
-    // kingMe()
+    kingMe(desiredSqrIdx);
     gameState.selectedPiece.classList.remove('selected');
     gameState.board[selectedPieceIdx] = null;
     resetSelectors();
     gameState.turn *= -1;
+    turnCounter += 1;
 }
 function moveCheck(move1, move2) {
     if (selectedPieceClasses.includes('odd')) {
@@ -210,21 +212,41 @@ function setRowClasses() {
     }
 }
 function kingMe() {
-    let kingsRowOdd = [0, 1, 2, 3];
-    let kingsRowEven = [28, 29, 30, 31];
-    if (kingsRowOdd.includes(playSqrs[gameState.desiredSqr])) {
-        gameState.board[desiredSqr].isKing = true;
-        console.log(gameState.board[desiredSqr].isKing);
-        // gameState.board[gameState.desiredSqr].classList.add('team2-king');
-        // gameState.board[gameState.desiredSqr].classList.remove('team2-piece');
-    } else if (kingsRowEven.includes(playSqrs[gameState.desiredSqr])) {
-        gameState.board[desiredSqr].isKing = true;
-        console.log(gameState.board[desiredSqr].isKing);
-        // gameState.board[gameState.desiredSqr].classList.add('team1-king');
-        // gameState.board[gameState.desiredSqr].classList.remove('team1-piece');
+    if (kingsRow.includes(desiredSqrIdx)) {
+        gameState.board[desiredSqrIdx] = null;
+        // gameState.board[desiredSqrIdx].isKing = true;
     }
-    // gameState.board[desiredSqr].isKing = true;
-    // change isKing property to true
+}
+function winCheck() {
+    winCountArray = gameState.board;
+    let p1Count = 0;
+    let p2Count = 0;
+    winCountArray.forEach((el) => {
+        if (el !== null) {
+            if (el.player === 1) {
+                p1Count++;
+            } else if (el.player === -1) {
+                p2Count++;
+            }
+        }
+    });
+    if (p1Count === 0) {
+        msgEl.textContent = 'Well done, Player 2! Click below to play again.'
+    } else if (p2Count === 0) {
+        msgEl.textContent = 'Well done, Player 1! Click below to play again.'
+    }
+    if (turnCounter === 40) {
+        if (p1Count === p2Count) {
+            gameState.win = 'tie';
+            msgEl.textContent = "It's a tie! Click below to play again."
+        } else if (p1Count > p2Count) {
+            gameState.win = 1;
+            msgEl.textContent = 'Well done, Player 1! Click below to play again.'
+        } else if (p2Count > p1Count) {
+            gameState.win = -1;
+            msgEl.textContent = 'Well done, Player 2! Click below to play again.'
+        }
+    }
 }
 function renderBoard() {
     gameState.board.forEach((piece, idx) => {
@@ -248,11 +270,6 @@ function renderBoard() {
         sqr.classList.remove(class4);
         sqr.classList.add(class5);
     }
-}
-
-function edgeCheck() {
-    let edgeSqrs = [3, 4, 11, 12, 19, 20, 27, 28];
-    return !edgeSqrs.includes(selectedPieceIdx) ? !edgeSqrs.includes(desiredSqrIdx) : false;
 }
 
 init();

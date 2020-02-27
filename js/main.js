@@ -9,7 +9,7 @@ const kingsRow = [0, 1, 2, 3, 28, 29, 30, 31];
 class Piece {
     constructor(player) {
         this.player = player;
-        this.isKing = false;
+        this.isKing = true;
     }
     move() {
         if (this.isKing) {
@@ -182,6 +182,7 @@ function setDesiredPiece(evt, evtSqrIdx, eventClasses) {
     desiredSqrClasses = eventClasses;
     desiredSqr = evt.target;
     if (desiredSqrClasses.includes('empty')) {
+        debugger;
         board[selectedPieceIdx].move();
     } else if (desiredSqr === selectedPiece) {
         selectedPiece.classList.remove('selected');

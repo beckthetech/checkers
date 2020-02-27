@@ -21,6 +21,7 @@ JavaScipt, HTML, CSS
 ## Getting Started
 [Click to play]: https://chasmad.github.io/checkers/
 [Click to play]
+
 [Click for repo]: https://github.com/chasmad/checkers/tree/gh-pages
 [Click for repo]
 

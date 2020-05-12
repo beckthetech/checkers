@@ -19,11 +19,11 @@
 JavaScipt, HTML, CSS
 
 ## Getting Started
-[Click to play]: https://chasmad.github.io/checkers/
-[Click to play]
+[Click to launch Hoppers]: https://chasmad.github.io/checkers/
+[Click to launch Hoppers]
 
-[Click for repo]: https://github.com/chasmad/checkers/tree/gh-pages
-[Click for repo]
+[Click for the repo on Github]: https://github.com/chasmad/checkers/tree/gh-pages
+[Click for the repo on Github]
 
 ## Next Steps
 - Add data for individual players: remaining pieces, turn count, total wins, etc
